@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Guide
+{% endblock %}
+
+{% block main %}
+
+<h1 class="display-4">Watch & Learn</h1>
+
+<div>
+<br>
+Every table in W&L is sortable by clicking on table headers. Every word is in lowercase to avoid generating duplicates. 
+<br><br>
+</div>
+
+<div>
+<ol>
+<li>Analyze
+<br>
+This form analyzes any text input by the user and generates a table of words with its Korean translation, number of times it occurred, and percentage it makes up of the entire text. The last column provides an option to flag the word for "Focus," placing it into a pile of flashcards to study from. If the word has already been flagged for "Focus" or "Learned," the last column would indicate so, and the user would not be able to flag the word again. One useful website is <a href="https://subslikescript.com/">Subs like Script</a> which has a comprehensive database of popular TV shows' transcripts.
+<br><br>
+</li>
+<li>History
+<br>
+This page lists the previous analyses ran, along with its relevant input texts. Words from the History page may be flagged for "Focus."
+<br><br>
+</li>
+<li>Focus
+<br>
+Here, words flagged for "Focus" are presented as a pile of flashcards, showing the English word first and then the Korean translation. Below the flashcards are the list of words and every transcript in history which contains the specific word. Users have the option to remove the word from "Focus" or move it onto "Learned."
+<br><br>
+</li>
+<li>Progress
+<br>
+This page lists every transcript in the user's history and the progress made in learning the entire transcript's vocabulary. At the end of the page are the list of words flagged as "Learned"; from here, users are able to move these words back to "Focus."
+<br><br>
+</li>
+</div>
+
+{% endblock %}

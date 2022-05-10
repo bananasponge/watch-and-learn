@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Apology
+{% endblock %}
+
+{% block main %}
+
+<div class="d-grid gap-2 col-6 mx-auto">
+    <!-- https://memegen.link/ -->
+    <img alt="{{ top }}" class="border img-fluid" src="http://memegen.link/custom/{{ top | urlencode }}/{{ bottom | urlencode }}.jpg?alt=https://www.shitpostbot.com/img/sourceimages/barry-b-benson-5843af49bf827.jpeg" title="{{ top }}">
+</div>
+
+{% endblock %}

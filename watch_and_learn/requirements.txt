@@ -1,0 +1,7 @@
+re
+cs50
+flask
+flask_session
+werkzeug.security
+googletrans
+functools

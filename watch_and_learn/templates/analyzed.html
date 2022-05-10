@@ -1,0 +1,69 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Analyze
+{% endblock %}
+
+{% block main %}
+
+<h1>{{ text_name }}</h1>
+
+<form action="/focus" method="post">
+    <table class="table-dark table-sm" id="analysis">
+        <thead>
+            <tr>
+                <th class="text-start th-sm"><img src="/static/sorticon.png" style="width:30px;height:30px; padding:3px;"></th>
+                <th class="text-start th-sm">Word</th>
+                <th class="text-end th-sm">Translation (KR)</th>
+                <th class="text-end th-sm">Occurrence</th>
+                <th class="text-end th-sm">Percentage</th>
+                <th class="text-center th-sm"><button class="btn btn-outline-light btn-sm" type="submit">Add to Focus</button></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in output %}
+            <tr>
+                <td class="text-start"></td>
+                <td class="text-start">{{ item["word"] }}</td>
+                <td class="text-end">{{ item["translation"] }}</td>
+                <td class="text-end">{{ item["occurrence"] }}</td>
+                <td class="text-end">{{ item["percentage"]|round(2) }}%</td>
+                <!-- If word is already learned or already in focus, indicate so -->
+                {% if item["focusflag"] or item["learnedflag"] %}
+                    <td class="text-center"><img src="/static/greencheck.png" width="15" height="15"></td>
+                {% else %}
+                    <td class="text-center"><input class="form-check-input" type="checkbox" value="{{ item['word'] }} to_move_to_focus" name="tomove"></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</form>
+
+
+
+<script>
+
+// Script to sort table based on headers
+
+$('th').click(function(){
+    var table = $(this).parents('table').eq(0)
+    var rows = table.find('tr:gt(0)').toArray().sort(comparer($(this).index()))
+    this.asc = !this.asc
+    if (!this.asc){rows = rows.reverse()}
+    for (var i = 0; i < rows.length; i++){table.append(rows[i])}
+})
+function comparer(index) {
+    return function(a, b) {
+        var valA = getCellValue(a, index).replace("%", "");
+        var valB = getCellValue(b, index).replace("%", "");
+        return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.toString().localeCompare(valB)
+    }
+}
+function getCellValue(row, index){ return $(row).children('td').eq(index).text() }
+
+</script>
+
+
+
+{% endblock %}

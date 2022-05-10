@@ -1,0 +1,97 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Progress
+{% endblock %}
+
+{% block main %}
+
+<!-- Display history cards with all calculated completion percentages -->
+{% for item in list%}
+
+    <div class="row">
+        <div class="col">
+            <div class="card bg-transparent text-white border-light">
+                <div class="card-body">
+                    <form action="/history" method="post">
+                        <h4 class="card-title">{{ item[0]["text_name"] }}</h4>
+                        <p>Percentage Completed:</p>
+                        <div class="progress" style="height: 30px;">
+                        <div class="progress-bar progress-bar-striped bg-success" style="width: {{ item[1]['progress']|round(2) }}%">{{ item[1]['progress']|int }}%</div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+
+{% endfor%}
+
+<!-- Display list of learned words in expandable card -->
+<p>
+    <br>
+    <button class="btn btn-outline-light btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMotion" aria-expanded="false" aria-controls="collapseMotion">
+    See All Learned Words
+    </button>
+</p>
+<div class="collapse" id="collapseMotion">
+    <div class="card bg-transparent text-white">
+        <form action="/focus" method="post">
+            <table class="table-dark table-sm" id="learnedwordstable">
+                <thead>
+                    <tr>
+                        <th class="text-start th-sm"><img src="/static/sorticon.png" style="width:30px;height:30px; padding:3px;"></th>
+                        <th class="text-start th-sm">Transcript Appearances</th>
+                        <th class="text-end th-sm">Word</th>
+                        <th class="text-end th-sm">Translation (KR)</th>
+                        <th class="text-center th-sm"><button class="btn btn-outline-light btn-sm" type="submit">Move Back to Focus</button></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for item in output %}
+                    <tr>
+                        <td class="text-start">
+                        <td class="text-start">
+                            {% for title in item[0]["texts"] %}
+                                {{ title }}
+                            {% endfor %}
+                        </td>
+                        <td class="text-end">{{ item[1]["word"] }}</td>
+                        <td class="text-end">{{ item[2]["translation"] }}</td>
+                        <td class="text-center"><input class="form-check-input" type="checkbox" value="{{ item[1]['word'] }} to_move_to_focus" name="tomove"></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        <form>
+    </div>
+</div>
+
+
+
+<script>
+
+// Script to sort table based on headers
+
+$('th').click(function(){
+    var table = $(this).parents('table').eq(0)
+    var rows = table.find('tr:gt(0)').toArray().sort(comparer($(this).index()))
+    this.asc = !this.asc
+    if (!this.asc){rows = rows.reverse()}
+    for (var i = 0; i < rows.length; i++){table.append(rows[i])}
+})
+function comparer(index) {
+    return function(a, b) {
+        var valA = getCellValue(a, index).replace("%", "");
+        var valB = getCellValue(b, index).replace("%", "");
+        return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.toString().localeCompare(valB)
+    }
+}
+function getCellValue(row, index){ return $(row).children('td').eq(index).text() }
+
+</script>
+
+
+
+{% endblock %}

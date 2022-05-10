@@ -1,0 +1,129 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Focus
+{% endblock %}
+
+{% block main %}
+
+<!-- Display flashcard pile in studiable layout -->
+
+<div id="carouselIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="false">
+
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#carouselIndicators" data-bs-slide-to="0" class="active"></button>
+        {% for i in range((output|length)*2) %}
+        <button type="button" data-bs-target="#carouselIndicators" data-bs-slide-to="{{ i + 1 }}"></button>
+        {% endfor %}
+    </div>
+
+    <div class="carousel-inner">
+
+        <div class="carousel-item active">
+            <div class="caroucontainer">
+                <img src="/static/flashcard.png" style="width:100%;">
+                <div class="caroucentered"><h1>Start Studying</h1></div>
+            </div>
+        </div>
+
+{% for item in output %}
+
+        <div class="carousel-item">
+            <div class="caroucontainer">
+                <img src="/static/flashcard.png" style="width:100%;">
+                <div class="caroucentered"><h6><i>English Word:</i></h6><h1><b>{{ item[1]["word"] }}</b></h1></div>
+            </div>
+        </div>
+
+        <div class="carousel-item">
+            <div class="caroucontainer">
+                <img src="/static/flashcard.png" style="width:100%;">
+                <div class="caroucentered"><h6><i>Korean Translation:</i></h6><h1><b>{{ item[2]["translation"] }}</b></h1></div>
+            </div>
+        </div>
+
+{% endfor %}
+
+    </div>
+
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselIndicators" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselIndicators" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+
+</div>
+
+<!-- Display focus list in expandable card -->
+
+<p>
+    <br>
+    <button class="btn btn-outline-light btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMotion" aria-expanded="false" aria-controls="collapseMotion">
+    See All Focus Words
+    </button>
+</p>
+<div class="collapse" id="collapseMotion">
+    <div class="card bg-transparent text-white">
+        <form action="/focus" method="post">
+            <table class="table-dark table-sm" id="selected_history">
+                <thead>
+                    <tr>
+                        <th class="text-start th-sm"><img src="/static/sorticon.png" style="width:30px;height:30px; padding:3px;"></th>
+                        <th class="text-start th-sm">Transcript Appearances</th>
+                        <th class="text-end th-sm">Word</th>
+                        <th class="text-end th-sm">Translation (KR)</th>
+                        <th class="text-center th-sm"><button class="btn btn-outline-light btn-sm" type="submit">Learned</button></th>
+                        <th class="text-end th-sm"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for item in output %}
+                    <tr>
+                        <td class="text-start"></td>
+                        <td class="text-start">
+                            {% for title in item[0]["texts"] %}
+                                {{ title }}
+                            {% endfor %}
+                        </td>
+                        <td class="text-end">{{ item[1]["word"] }}</td>
+                        <td class="text-end">{{ item[2]["translation"] }}</td>
+                        <td class="text-center"><input class="form-check-input" type="checkbox" value="{{ item[1]['word'] }} to_move_to_learned" name="tomove"></td>
+                        <td class="text-center"><a href="/focus?word_id={{ item[3]['word_id'] }}" class="button1" onclick="return confirm('\nRemove this word from Focus and revert it back to normal?\n\n(You can add it back in again from the History page.)\n')">X</a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        <form>
+    </div>
+</div>
+
+
+
+<script>
+
+// Script to sort table based on headers
+
+$('th').click(function(){
+    var table = $(this).parents('table').eq(0)
+    var rows = table.find('tr:gt(0)').toArray().sort(comparer($(this).index()))
+    this.asc = !this.asc
+    if (!this.asc){rows = rows.reverse()}
+    for (var i = 0; i < rows.length; i++){table.append(rows[i])}
+})
+function comparer(index) {
+    return function(a, b) {
+        var valA = getCellValue(a, index).replace("%", "");
+        var valB = getCellValue(b, index).replace("%", "");
+        return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.toString().localeCompare(valB)
+    }
+}
+function getCellValue(row, index){ return $(row).children('td').eq(index).text() }
+
+</script>
+
+
+
+{% endblock %}

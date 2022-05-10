@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    History
+{% endblock %}
+
+{% block main %}
+
+<style>
+/* CSS customizations only applicable to historyhome page, hence left here */
+
+/* Initially, hide the extra text */
+.moremore {
+    /* Display nothing for the element */
+    display: none;
+}
+
+</style>
+
+<!-- Show cards of historical inputs and links to show more -->
+{% for item in list%}
+
+    <div class="row">
+        <div class="col">
+            <div class="card bg-transparent text-white border-light">
+                <div class="card-body">
+
+                    <h4 class="card-title d-flex justify-content-between align-items-center">{{ item[0]["text_name"] }}
+
+                    <form action="/history" method="post">
+                        <button class="button2" type="submit" name="delete" value="{{ item[1]['text_id'] }}" onclick="return confirm('\nRemove this text from History?\n\nFocus and Progress pages would be affected too, and there is no way to undo this.\n')">X</button></h4>
+                    </form>
+
+                    <!-- If there's more text, show ellipsed version -->
+                    {% if item[3]["text2"] %}
+                        <p>{{ item[2]["text1"] }}
+                        <span class="moremore" id="moreText_{{ item[1]['text_id'] }}">
+                            {{ item[3]["text2"] }}
+                        </span>
+                        <span id="points_{{ item[1]['text_id'] }}"> ... </span>
+                        <button class="btn btn-outline-light btn-sm button3" onclick="toggleText({{ item[1]['text_id'] }})" id="textButton_{{ item[1]['text_id'] }}">
+                            Show More
+                        </button></p>
+                    {% else %}
+                        <p>{{ item[2]["text1"] }}</p>
+                    {% endif %}
+
+                    <a href="/history?text_id={{ item[1]['text_id'] }}" class="btn btn-outline-light btn-sm" type="submit">See Analysis</a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+
+{% endfor%}
+
+
+<script>
+
+function toggleText(x) {
+
+    // Get all the elements from the page
+    var points = document.getElementById("points" + "_" + x);
+    var showMoreText = document.getElementById("moreText" + "_" + x);
+    var buttonText = document.getElementById("textButton" + "_" + x);
+
+    // If dots property is 'none' (i.e. hidden) then this section of code triggers
+    if (points.style.display === "none") {
+        // Hide the text between the span elements
+        showMoreText.style.display = "none";
+        // Show the dots after the text
+        points.style.display = "inline";
+        // Change the text on button to 'Show More'
+        buttonText.innerHTML = "Show More";
+    }
+
+    // If the hidden portion is revealed, change it back to be hidden
+    else {
+        // Show the text between the span elements
+        showMoreText.style.display = "inline";
+        // Hide the dots after the text
+        points.style.display = "none";
+        // Change the text on button to 'Show Less'
+        buttonText.innerHTML = "Show Less";
+    }
+}
+
+</script>
+
+
+{% endblock %}

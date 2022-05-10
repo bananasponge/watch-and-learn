@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Analyze
+{% endblock %}
+
+{% block main %}
+
+<div id="loading" class="container-fluid">
+    <h1>The algorithm is analyzing your text.</h1>
+    <br>
+    <br>
+    <h5>Please enjoy this wonderful movie in the meantime:</h5>
+    <p><img src="/static/loadingimage.gif" style="width:461px;height:277px;"></p>
+</div>
+
+<div id="content">
+
+    <form action="/analyze" method="post">
+        <div class="mb-3">
+            <label class="form-label">Transcript Name:</label>
+            <input autocomplete="off" autofocus="" class="form-control w-auto" name="text_name" placeholder="e.g. Friends Episode 1" type="text">
+            <label class="form-label">Transcript Text:</label>
+            <textarea class="form-control" name="input" rows="10"></textarea>
+        </div>
+        <div class="d-grid gap-2 col-6 mx-auto">
+            <button class="btn btn-outline-light" type="submit" onclick="loading();">Analyze</button>
+        </div>
+    </form>
+
+</div>
+
+
+
+<script type="text/javascript">// <![CDATA[
+        function loading(){
+            $("#loading").show();
+            $("#content").hide();
+        }
+// ]]></script>
+
+
+
+{% endblock %}
